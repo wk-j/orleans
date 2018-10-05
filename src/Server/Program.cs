@@ -20,7 +20,6 @@ namespace Server {
         }
     }
 
-
     class Program {
         static async System.Threading.Tasks.Task Main(string[] args) {
             var siloBuilder =
@@ -37,9 +36,27 @@ namespace Server {
 
             using (var host = siloBuilder.Build()) {
                 await host.StartAsync();
+                var clientBuilder = new ClientBuilder()
+                   .UseLocalhostClustering()
+                   .Configure<ClusterOptions>(options => {
+                       options.ClusterId = "dev";
+                       options.ServiceId = "Orleans2GettingStarted";
+                   })
+                   .ConfigureLogging(logging => logging.AddConsole());
 
+                using (var client = clientBuilder.Build()) {
+                    await client.Connect();
 
-                Console.ReadLine();
+                    var random = new Random();
+                    string sky = "blue";
+
+                    while (sky == "blue") {
+                        int grainId = random.Next(0, 500);
+                        double temperature = random.NextDouble() * 40;
+                        var sensor = client.GetGrain<ITemperatureSensorGrain>(grainId);
+                        await sensor.SubmitTemperatureAsync((float)temperature);
+                    }
+                }
             }
         }
     }
