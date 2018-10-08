@@ -10,3 +10,10 @@ dotnet run --project src/Server/Server.csproj
 
 dotnet add src/Client/Client.csproj package Microsoft.Orleans.Client
 ```
+
+## Grain and Silo
+
+```
+dotnet add src/GrainAndSilo package Microsoft.Orleans.Core
+dotnet add src/GrainAndSilo package Microsoft.Orleans.OrleansCodeGenerator.Build
+```
