@@ -5,6 +5,7 @@ using Orleans.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime;
 using MyInterface;
+using System.Linq;
 
 namespace MyClient {
     public class Program {
@@ -66,6 +67,12 @@ namespace MyClient {
             var friend = client.GetGrain<IHello>(0);
             var response = await friend.SayHello("Good morning, my friend!");
             Console.WriteLine("\n\n{0}\n\n", response);
+
+            var f = client.GetGrain<IHelloArchive>(0);
+            _ = await f.SayHello("Hello, world!");
+            _ = await f.SayHello("Hello, again");
+            var count = (await f.GetGreetings()).Count();
+            Console.WriteLine($">> {count}");
         }
     }
 }
